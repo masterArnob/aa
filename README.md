@@ -95,3 +95,10 @@ int main() {
     return 0;
 }
 ```
+
+
+### Coin change problem
+
+```
+cout << "Enter coin denominations: ";
+```
