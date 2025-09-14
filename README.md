@@ -4,51 +4,52 @@
 #include <iostream>
 using namespace std;
 
-void solveKnapsack(int n, int capacity, int weights[], int profits[]) {
+void knapsack(int n, int capacity, int weights[], int profits[]) {
     // Create DP table
+    int i, j, include, exclude;
     int dp[n+1][capacity+1];
     int binary[n+1][capacity+1];
     
     // Initialize DP table
-    for(int i = 0; i <= n; i++) {
-        for(int w = 0; w <= capacity; w++) {
-            if(i == 0 || w == 0) {
-                dp[i][w] = 0;
-                binary[i][w] = 0;
+    for(i = 0; i <= n; i++) {
+        for(j = 0; j <= capacity; j++) {
+            if(i == 0 || j == 0) {
+                dp[i][j] = 0;
+                binary[i][j] = 0;
             }
-            else if(weights[i-1] <= w) {
-                int include = profits[i-1] + dp[i-1][w - weights[i-1]];
-                int exclude = dp[i-1][w];
+            else if(weights[i-1] <= j) {
+                 include = profits[i-1] + dp[i-1][j - weights[i-1]];
+                 exclude = dp[i-1][j];
                 
                 if(include > exclude) {
-                    dp[i][w] = include;
-                    binary[i][w] = 1;
+                    dp[i][j] = include;
+                    binary[i][j] = 1;
                 } else {
-                    dp[i][w] = exclude;
-                    binary[i][w] = 0;
+                    dp[i][j] = exclude;
+                    binary[i][j] = 0;
                 }
             }
             else {
-                dp[i][w] = dp[i-1][w];
-                binary[i][w] = 0;
+                dp[i][j] = dp[i-1][j];
+                binary[i][j] = 0;
             }
         }
     }
     
     // 1. Output the profit DP table
     cout << "\n1. Profit DP Table:\n";
-    for(int i = 0; i <= n; i++) {
-        for(int w = 0; w <= capacity; w++) {
-            cout << dp[i][w] << "\t";
+    for(i = 0; i <= n; i++) {
+        for(j = 0; j <= capacity; j++) {
+            cout << dp[i][j] << "\t";
         }
         cout << endl;
     }
     
     // 2. Output the binary table
     cout << "\n2. Binary Table (0=not taken, 1=taken):\n";
-    for(int i = 0; i <= n; i++) {
-        for(int w = 0; w <= capacity; w++) {
-            cout << binary[i][w] << "\t";
+    for(i = 0; i <= n; i++) {
+        for(j = 0; j <= capacity; j++) {
+            cout << binary[i][j] << "\t";
         }
         cout << endl;
     }
@@ -58,11 +59,11 @@ void solveKnapsack(int n, int capacity, int weights[], int profits[]) {
     
     // 4. Find and output selected objects
     cout << "\n4. Objects selected: ";
-    int w = capacity;
-    for(int i = n; i > 0; i--) {
-        if(binary[i][w] == 1) {
+    j = capacity;
+    for(i = n; i > 0; i--) {
+        if(binary[i][j] == 1) {
             cout << i << " ";
-            w -= weights[i-1];
+            j -= weights[i-1];
         }
     }
     cout << endl;
@@ -80,20 +81,18 @@ int main() {
     
     int weights[n], profits[n];
     
-    
     for(int i = 0; i < n; i++) {
-        cout << "Enter weights of items: " << i+1 <<" : ";
+        cout << "Enter weight of item " << i+1 << ": ";
         cin >> weights[i];
-        cout << "Enter profits of items: " << i+1 << " : ";
+        cout << "Enter profit of item " << i+1 << ": ";
         cin >> profits[i];
     }
 
-    
-    // Call the knapsack solving function
-    solveKnapsack(n, capacity, weights, profits);
+    knapsack(n, capacity, weights, profits);
     
     return 0;
 }
+
 ```
 
 
