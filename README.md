@@ -106,11 +106,12 @@ const int INF = 999999;
 
 // Function to find minimum number of coins needed
 void coinChangeMin(int coins[], int n, int amount) {
+    int i, j;
     int dp[n+1][amount+1];
     
     // Initialize DP table
-    for(int i = 0; i <= n; i++) {
-        for(int j = 0; j <= amount; j++) {
+    for(i = 0; i <= n; i++) {
+        for(j = 0; j <= amount; j++) {
             if(j == 0) {
                 dp[i][j] = 0; // 0 coins needed for amount 0
             }
@@ -128,8 +129,8 @@ void coinChangeMin(int coins[], int n, int amount) {
     
     // Output DP table
     cout << "\nMinimum Coins DP Table:\n";
-    for(int i = 0; i <= n; i++) {
-        for(int j = 0; j <= amount; j++) {
+    for(i = 0; i <= n; i++) {
+        for(j = 0; j <= amount; j++) {
             if(dp[i][j] == INF) {
                 cout << "INF\t";
             } else {
@@ -147,7 +148,7 @@ void coinChangeMin(int coins[], int n, int amount) {
         
         // Backtrack to find coins used
         cout << "Coins used: ";
-        int i = n, j = amount;
+        i = n, j = amount;
         while(j > 0 && i > 0) {
             if(dp[i][j] == dp[i-1][j]) {
                 i--; // Coin not used
@@ -165,8 +166,9 @@ void coinChangeMaxWays(int coins[], int n, int amount) {
     int dp[n+1][amount+1];
     
     // Initialize DP table
-    for(int i = 0; i <= n; i++) {
-        for(int j = 0; j <= amount; j++) {
+    int i, j;
+    for(i = 0; i <= n; i++) {
+        for(j = 0; j <= amount; j++) {
             if(j == 0) {
                 dp[i][j] = 1; // 1 way to make amount 0 (no coins)
             }
@@ -184,8 +186,8 @@ void coinChangeMaxWays(int coins[], int n, int amount) {
     
     // Output DP table
     cout << "\nMaximum Ways DP Table:\n";
-    for(int i = 0; i <= n; i++) {
-        for(int j = 0; j <= amount; j++) {
+    for(i = 0; i <= n; i++) {
+        for(j = 0; j <= amount; j++) {
             cout << dp[i][j] << "\t";
         }
         cout << endl;
@@ -196,7 +198,7 @@ void coinChangeMaxWays(int coins[], int n, int amount) {
 }
 
 int main() {
-    int n, amount;
+    int n, amount, i;
     
     // Take input from user
     cout << "Enter number of coin denominations: ";
@@ -208,7 +210,7 @@ int main() {
     int coins[n];
     
     
-    for(int i = 0; i < n; i++) {
+    for(i = 0; i < n; i++) {
         cout << "Enter coin denominations " << i+1 << " : ";
         cin >> coins[i];
     }
@@ -222,4 +224,5 @@ int main() {
     
     return 0;
 }
+
 ```
