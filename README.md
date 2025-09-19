@@ -1,3 +1,59 @@
+### LIS
+```
+#include<iostream>
+using namespace std;
+
+int lis(int A[], int n, int dp[100]) {
+    for (int i = 0; i < n; i++) {
+        dp[i] = 1;
+    }
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (A[i] > A[j]) {
+                dp[i] = max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+    int max_len = 0;
+    for (int i = 0; i < n; i++) {
+        max_len = max(max_len, dp[i]);
+    }
+    return max_len;
+}
+
+void printLIS(int A[], int n, int dp[100]) {
+    cout << "Index: ";
+    for (int i = 0; i < n; i++) {
+        cout << i << " ";
+    }
+    cout << endl;
+    cout << "Value: ";
+    for (int i = 0; i < n; i++) {
+        cout << A[i] << " ";
+    }
+    cout << endl;
+    cout << "LIS:   ";
+    for (int i = 0; i < n; i++) {
+        cout << dp[i] << " ";
+    }
+    cout << endl;
+}
+
+int main() {
+    int n;
+    cout << "Enter the number of elements: ";
+    cin >> n;
+    int A[100], dp[100];
+    cout << "Enter the sequence: ";
+    for (int i = 0; i < n; i++) {
+        cin >> A[i];
+    }
+    int length = lis(A, n, dp);
+    cout << "LIS Length: " << length << endl;
+    printLIS(A, n, dp);
+    return 0;
+}
+```
 ### 0/1 knapsack greedy
 
 ```
@@ -95,6 +151,66 @@ int main() {
 
 ```
 
+###  LCS
+```
+ 
+#include<iostream>
+#include<cstring>
+using namespace std;
+
+int lcs(char X[], char Y[], int m, int n, int dp[100][100]) {
+    for (int i = 0; i <= m; i++) {
+        dp[i][0] = 0;
+    }
+    for (int j = 0; j <= n; j++) {
+        dp[0][j] = 0;
+    }
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (X[i-1] == Y[j-1]) {
+                dp[i][j] = dp[i-1][j-1] + 1;
+            } else {
+                dp[i][j] = max(dp[i-1][j], dp[i][j-1]);
+            }
+        }
+    }
+    return dp[m][n];
+}
+
+void printTable(char X[], char Y[], int m, int n, int dp[100][100]) {
+    cout << "  ";
+    for (int j = 0; j < n; j++) {
+        cout << Y[j] << " ";
+    }
+    cout << endl;
+    for (int i = 0; i <= m; i++) {
+        if (i > 0) {
+            cout << X[i-1] << " ";
+        } else {
+            cout << "  ";
+        }
+        for (int j = 0; j <= n; j++) {
+            cout << dp[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+int main() {
+    char X[100], Y[100];
+    cout << "Enter first sequence: ";
+    cin >> X;
+    cout << "Enter second sequence: ";
+    cin >> Y;
+    int m = strlen(X);
+    int n = strlen(Y);
+    int dp[100][100] = {0};
+    int length = lcs(X, Y, m, n, dp);
+    cout << "LCS Length: " << length << endl;
+    printTable(X, Y, m, n, dp);
+    return 0;
+}
+```
 
 ### Coin change problem
 
