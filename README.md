@@ -224,101 +224,123 @@ using namespace std;
 
 const int INF = 999999;
 
-// Function to find minimum number of coins needed
-void coinChangeMin(int coins[], int n, int amount) {
-    int i, j;
+void coinChange(int coins[], int n, int amount) {
+    // Create DP table for minimum coins
+    int i, w;
     int dp[n+1][amount+1];
+    int binary[n+1][amount+1]; // To track which coins are used
     
     // Initialize DP table
     for(i = 0; i <= n; i++) {
-        for(j = 0; j <= amount; j++) {
-            if(j == 0) {
-                dp[i][j] = 0; // 0 coins needed for amount 0
+        for(w = 0; w <= amount; w++) {
+            if(w == 0) {
+                dp[i][w] = 0;        // 0 coins needed for amount 0
+                binary[i][w] = 0;
             }
             else if(i == 0) {
-                dp[i][j] = INF; // No coins available, impossible
+                dp[i][w] = INF;      // Impossible with no coins
+                binary[i][w] = 0;
             }
-            else if(coins[i-1] <= j) {
-                dp[i][j] = min(dp[i-1][j], 1 + dp[i][j - coins[i-1]]);
+            else if(coins[i-1] <= w) {
+                int include = 1 + dp[i][w - coins[i-1]];
+                int exclude = dp[i-1][w];
+                
+                if(include < exclude) {
+                    dp[i][w] = include;
+                    binary[i][w] = 1;  // Coin used
+                } else {
+                    dp[i][w] = exclude;
+                    binary[i][w] = 0;  // Coin not used
+                }
             }
             else {
-                dp[i][j] = dp[i-1][j];
+                dp[i][w] = dp[i-1][w];
+                binary[i][w] = 0;
             }
         }
     }
     
-    // Output DP table
-    cout << "\nMinimum Coins DP Table:\n";
+    // 1. Output the minimum coins DP table
+    cout << "\n1. Minimum Coins DP Table:\n";
     for(i = 0; i <= n; i++) {
-        for(j = 0; j <= amount; j++) {
-            if(dp[i][j] == INF) {
+        for(w = 0; w <= amount; w++) {
+            if(dp[i][w] == INF) {
                 cout << "INF\t";
             } else {
-                cout << dp[i][j] << "\t";
+                cout << dp[i][w] << "\t";
             }
         }
         cout << endl;
     }
     
-    // Output result
+    // 2. Output the binary table
+    cout << "\n2. Binary Table (0=not used, 1=used):\n";
+    for(i = 0; i <= n; i++) {
+        for(w = 0; w <= amount; w++) {
+            cout << binary[i][w] << "\t";
+        }
+        cout << endl;
+    }
+    
+    // 3. Output result
     if(dp[n][amount] == INF) {
-        cout << "It's not possible to make amount " << amount << " with given coins." << endl;
+        cout << "\n3. It's not possible to make amount " << amount << " with given coins." << endl;
     } else {
-        cout << "Minimum coins needed: " << dp[n][amount] << endl;
+        cout << "\n3. Minimum coins needed: " << dp[n][amount] << endl;
         
-        // Backtrack to find coins used
-        cout << "Coins used: ";
-        i = n, j = amount;
-        while(j > 0 && i > 0) {
-            if(dp[i][j] == dp[i-1][j]) {
-                i--; // Coin not used
-            } else {
+        // 4. Find and output coins used
+        cout << "\n4. Coins used: ";
+        i = n;
+        w = amount;
+        while(w > 0 && i > 0) {
+            if(binary[i][w] == 1) {
                 cout << coins[i-1] << " ";
-                j -= coins[i-1];
+                w -= coins[i-1];
+            } else {
+                i--;
             }
         }
         cout << endl;
     }
 }
 
-// Function to find maximum number of ways
-void coinChangeMaxWays(int coins[], int n, int amount) {
+void coinChangeWays(int coins[], int n, int amount) {
+    // Create DP table for number of ways
+    int i, w;
     int dp[n+1][amount+1];
     
     // Initialize DP table
-    int i, j;
     for(i = 0; i <= n; i++) {
-        for(j = 0; j <= amount; j++) {
-            if(j == 0) {
-                dp[i][j] = 1; // 1 way to make amount 0 (no coins)
+        for(w = 0; w <= amount; w++) {
+            if(w == 0) {
+                dp[i][w] = 1; // 1 way to make amount 0
             }
             else if(i == 0) {
-                dp[i][j] = 0; // No coins available, no ways
+                dp[i][w] = 0; // No ways with no coins
             }
-            else if(coins[i-1] <= j) {
-                dp[i][j] = dp[i-1][j] + dp[i][j - coins[i-1]];
+            else if(coins[i-1] <= w) {
+                dp[i][w] = dp[i-1][w] + dp[i][w - coins[i-1]];
             }
             else {
-                dp[i][j] = dp[i-1][j];
+                dp[i][w] = dp[i-1][w];
             }
         }
     }
     
-    // Output DP table
-    cout << "\nMaximum Ways DP Table:\n";
+    // Output the ways DP table
+    cout << "\n5. Number of Ways DP Table:\n";
     for(i = 0; i <= n; i++) {
-        for(j = 0; j <= amount; j++) {
-            cout << dp[i][j] << "\t";
+        for(w = 0; w <= amount; w++) {
+            cout << dp[i][w] << "\t";
         }
         cout << endl;
     }
     
-    // Output result
-    cout << "Maximum number of ways: " << dp[n][amount] << endl;
+    cout << "\n6. Number of ways to make " << amount << ": " << dp[n][amount] << endl;
 }
 
 int main() {
-    int n, amount, i;
+    int n, amount;
     
     // Take input from user
     cout << "Enter number of coin denominations: ";
@@ -329,20 +351,18 @@ int main() {
     
     int coins[n];
     
-    
-    for(i = 0; i < n; i++) {
-        cout << "Enter coin denominations " << i+1 << " : ";
+    for(int i = 0; i < n; i++) {
+        cout << "Enter coin denomination " << i+1 << ": ";
         cin >> coins[i];
     }
     
-    // Solve both problems
+    // Solve both coin change problems
     cout << "\n=== Minimum Coins Problem ===";
-    coinChangeMin(coins, n, amount);
+    coinChange(coins, n, amount);
     
-    cout << "\n=== Maximum Ways Problem ===";
-    coinChangeMaxWays(coins, n, amount);
+    cout << "\n=== Number of Ways Problem ===";
+    coinChangeWays(coins, n, amount);
     
     return 0;
 }
-
 ```
